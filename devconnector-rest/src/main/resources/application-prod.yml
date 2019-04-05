@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://devconnector-mysql-cluster-ip-service:3306/devconnector
+    username: devconnector
+    platform: mysql
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: false

@@ -1,0 +1,23 @@
+logging:
+  level:
+    com.alexvak.devconnectorrest: debug
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/devconnector
+    username: devconnector
+    password: devconnector
+    platform: mysql
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: true
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: docker-files/mysql/schema-generation-mysql.sql
