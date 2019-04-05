@@ -1,1 +1,1 @@
-# Developer Connector (Java + Angular)
+# Developer Connector (Spring Boot and Angular 7)
