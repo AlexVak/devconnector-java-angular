@@ -1,0 +1,10 @@
+sudo: required
+services:
+  - docker
+language: java
+script:
+  - cd devconnector-rest
+  - mvn clean install
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
