@@ -5,37 +5,39 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "profiles", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "nickname")
-})
+@Table(name = "profiles")
 public class UserProfile extends DateAudit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 40)
+    @Column(unique = true, nullable = false, length = 40)
     private String nickname;
 
+    @Column(length = 100)
     private String company;
+
+    @Column(length = 100)
     private String website;
+
+    @Column(length = 100)
     private String location;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "status_id", nullable = false)
     private Status status;
 
+    @Lob
     private String bio;
+
+    @Column(unique = true, length = 50)
     private String githubusername;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -44,7 +46,10 @@ public class UserProfile extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private Set<Skill> skills = new HashSet<>();
 
-    @NotNull
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "profile", fetch = FetchType.EAGER)
+    private Set<Experience> experiences = new HashSet<>();
+
     @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 }

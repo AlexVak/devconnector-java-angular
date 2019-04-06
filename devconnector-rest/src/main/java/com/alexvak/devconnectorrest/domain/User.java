@@ -16,26 +16,20 @@ import java.util.HashSet;
 @Getter
 @Setter
 @Entity
-@Table(name = "users", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table(name = "users")
 public class User extends DateAudit implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 40)
+    @Column(nullable = false, length = 100)
     private String name;
 
-    @NotBlank
-    @Email
-    @Size(max = 40)
+    @Column(unique = true, nullable = false, length = 40)
     private String email;
 
-    @NotBlank
-    @Size(max = 100)
+    @Column(nullable = false)
     private String password;
 
     private String avatar;

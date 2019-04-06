@@ -1,13 +1,7 @@
 package com.alexvak.devconnectorrest.bootstrap;
 
-import com.alexvak.devconnectorrest.domain.Skill;
-import com.alexvak.devconnectorrest.domain.Status;
-import com.alexvak.devconnectorrest.domain.User;
-import com.alexvak.devconnectorrest.domain.UserProfile;
-import com.alexvak.devconnectorrest.repository.ProfileRepository;
-import com.alexvak.devconnectorrest.repository.SkillRepository;
-import com.alexvak.devconnectorrest.repository.StatusRepository;
-import com.alexvak.devconnectorrest.repository.UserRepository;
+import com.alexvak.devconnectorrest.domain.*;
+import com.alexvak.devconnectorrest.repository.*;
 import com.timgroup.jgravatar.Gravatar;
 import com.timgroup.jgravatar.GravatarDefaultImage;
 import com.timgroup.jgravatar.GravatarRating;
@@ -19,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,15 +28,17 @@ public class UserBootstrap implements ApplicationListener<ContextRefreshedEvent>
     private final StatusRepository statusRepository;
     private final ProfileRepository profileRepository;
     private final SkillRepository skillRepository;
+    private final ExperienceRepository experienceRepository;
 
     public UserBootstrap(UserRepository userRepository, PasswordEncoder passwordEncoder,
                          StatusRepository statusRepository, ProfileRepository profileRepository,
-                         SkillRepository skillRepository) {
+                         SkillRepository skillRepository, ExperienceRepository experienceRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.statusRepository = statusRepository;
         this.profileRepository = profileRepository;
         this.skillRepository = skillRepository;
+        this.experienceRepository = experienceRepository;
     }
 
     @Override
@@ -73,6 +71,32 @@ public class UserBootstrap implements ApplicationListener<ContextRefreshedEvent>
             userProfile.setStatus(userStatus);
             userProfile.setSkills(skillSet);
             userProfile.setUser(newUser);
+
+            Experience experience = new Experience();
+            experience.setTitle("Job1");
+            experience.setCompany("Company1");
+            LocalDate localDate = LocalDate.now();
+            experience.setStartFrom(localDate.minusYears(2));
+            experience.setEndAt(localDate.minusDays(31));
+            experience.setCurrentJob(false);
+            experience.setDescription("Job1 in Company1");
+            experience.setProfile(userProfile);
+
+            Experience experience2 = new Experience();
+            experience2.setTitle("Job2");
+            experience2.setCompany("Company2");
+            experience2.setStartFrom(localDate.minusYears(5));
+            experience2.setEndAt(localDate.minusYears(4));
+            experience2.setCurrentJob(false);
+            experience2.setDescription("Job2 in Company2");
+            experience2.setProfile(userProfile);
+
+            Set<Experience> experiences = new HashSet<>(Arrays.asList(experience, experience2));
+
+            experiences.forEach(experienceRepository::save);
+
+            userProfile.setExperiences(experiences);
+
             profileRepository.save(userProfile);
 
             newUser.setUserProfile(userProfile);
